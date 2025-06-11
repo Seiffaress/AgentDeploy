@@ -10,8 +10,8 @@ COPY . .
 # Installer git
 RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-# Installer les dépendances
+# Installer les dépendances Python
 RUN pip install --no-cache-dir -r requirement.txt
 
-# Lancer le script principal
-CMD ["python", "main.py"]
+# Lancer l'application FastAPI avec uvicorn (port exposé automatiquement par Render)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "10000"]
