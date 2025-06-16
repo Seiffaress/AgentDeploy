@@ -1,6 +1,6 @@
-from exemple_corrige import add
+from exemple_corrige import kesm
 
-def test_add():
+def test_kesm():
     # deux tests unitaire pour Verifier le bon fonctionnement de la fonction add 
-    assert add(2, 3) == 5
-    assert add(-1, 1) == 0
+    assert kesm(3) == False
+    assert kesm(1) == False
