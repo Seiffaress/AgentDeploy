@@ -1,0 +1,1 @@
+2025-06-16 15:34:33,121 - ERROR - Error fetching bug issues: 401 {"message": "Bad credentials", "documentation_url": "https://docs.github.com/rest", "status": "401"}

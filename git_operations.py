@@ -2,6 +2,7 @@ from git import Repo
 import os
 from urllib.parse import urlparse, urlunparse
 
+
 class GitManager:
     def __init__(self, repo_url, local_path, github_token):
         self.repo_url = repo_url
@@ -40,3 +41,43 @@ class GitManager:
         self.repo.index.commit(commit_message)
         origin = self.repo.remotes.origin
         origin.push()
+
+from github import Github
+import logging
+from datetime import datetime
+
+class GithubIssueManager:
+    def __init__(self, github_token):
+        self.github = Github(github_token)
+        self.setup_logging()
+        
+    def setup_logging(self):
+        """Configure logging to file and console"""
+        log_filename = f"agent_actions_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            handlers=[
+                logging.FileHandler(log_filename),
+                logging.StreamHandler()
+            ]
+        )
+        self.logger = logging.getLogger(__name__)
+
+    def get_bug_issues(self, repo_name):
+        """Get all open issues labeled as 'bug'"""
+        try:
+            repo = self.github.get_repo(repo_name)
+            return repo.get_issues(state='open', labels=['bug'])
+        except Exception as e:
+            self.logger.error(f"Error fetching bug issues: {str(e)}")
+            return []
+
+    def mark_issue_as_resolved(self, issue):
+        """Change issue label from 'bug' to 'resolved'"""
+        try:
+            issue.remove_from_labels('bug')
+            issue.add_to_labels('resolved')
+            self.logger.info(f"Issue #{issue.number} marked as resolved")
+        except Exception as e:
+            self.logger.error(f"Error updating issue labels: {str(e)}")

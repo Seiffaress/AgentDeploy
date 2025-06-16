@@ -20,14 +20,19 @@ def est_python_valide(code: str) -> bool:
         print("Erreur de syntaxe détectée :", e)
         return False
 
-def corriger_code(code_source: str) -> str:
+def corriger_code(code_source: str, bug_description: str = "") -> str:
     prompt = {
-        "input": f"""[INST] Tu es un expert en programmation Python. Corrige ce code Python qui contient des erreurs. Retourne uniquement le code corrigé, sans explication.
+        "input": f"""[INST] Tu es un expert Python. Un bug a été identifié dans le code suivant. Voici la description du bug : 
 
-Code à corriger:
+{bug_description}
+
+Corrige ce bug dans le code suivant. Retourne uniquement le code corrigé, sans explication.
+
+Code :
 {code_source}
 [/INST]"""
     }
+
 
     try:
         response = requests.post(API_URL, headers=headers, json=prompt)
@@ -47,7 +52,7 @@ Code à corriger:
         print(f"Erreur lors de l'appel API : {e}")
         return ""
 
-def verifier_et_corriger():
+def verifier_et_corriger(bug_description: str = ""):
      # Utiliser le chemin dans le dossier Clone
     fichier = os.path.join("C:\\Users\\timos\\Desktop\\Clone", "test_sample.py")
     
@@ -67,7 +72,7 @@ def verifier_et_corriger():
     print(code_source)
 
     print("\n⚙️ Envoi au modèle Meta-Llama-3...")  # Mise à jour du message
-    code_corrige = corriger_code(code_source)
+    code_corrige = corriger_code(code_source, bug_description)
 
     if not code_corrige:
         print("❌ Aucun code corrigé reçu.")
